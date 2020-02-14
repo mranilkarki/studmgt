@@ -1,0 +1,31 @@
+<%- include('../partials/header'); -%>
+
+<table>
+    <tr>
+        <th>id:</th>
+        <th>Name:</th>
+        <th>Parents Name:</th>
+        <th>Address:</th>
+        <th>Contact Number:</th>
+    </tr>
+    <% for(var i=1; i < Object.keys(result).length ; i++) {%>
+        <tr>
+            <td><%- i -%></td>
+            <td><%- result[i].name -%></td>
+            <td><%- result[i].parentsname -%></td>
+            <td><%- result[i].address -%></td>
+            <td><%- result[i].contactno -%></td>
+            <td>
+                    <a href=/register/delete/<%-result[i].id-%>><input type="button"  value="delete"></a>
+            </td>
+            <td>
+                    <a href=/register/edit><input type="button" value="edit"></a>
+            </td>
+        </tr>
+        
+
+<%}%>
+</table>
+
+
+<%- include('../partials/footer')-%>
