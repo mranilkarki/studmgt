@@ -1,127 +1,154 @@
-// // const express = require('express');
-// // var bodyParser = require('body-parser');
-// // var app=express();
-// // var mysql = require('mysql');
+const express = require('express');
+var bodyParser = require('body-parser');
+var app=express();
 
-// // const path = require('path');
-// // app.use(bodyParser.urlencoded({extended:true}));
-// // var con = mysql.createConnection({
-// //     host: "localhost",
-// //     user: "root",
-// //     password: "",
-// //     database: "StudentsRecord"
-// //     });
-// //     con.connect(function(err) {
-// //         if (err) throw err;
-// //         console.log("Connected!");
-// //     });
-// // const AddStudents=(req,res)=>{
+var Student= require('../../module/student');
+var mongoose=require('mongoose');
+var path = require('path');
+app.use(bodyParser.urlencoded({extended:true}));
+
+//connecting to database
+const connection = mongoose.createConnection(`mongodb+srv://anilkarki:anil@cluster0-4eqlb.mongodb.net/test?retryWrites=true&w=majority`,{
+    useNewUrlParser: true ,
+    useUnifiedTopology: true 
+});
+connection.on('connected', () => {
+  console.log('connected to mongodb');
+});
+
+connection.on('disconnected', () => {
+  console.log('connection disconnected');
+});
+
+//end of connection
+
+const AddStudents=(req,res)=>{
+    var studentData={
+        name: req.body.name,
+        parentsname: req.body.parentsname,
+        address: req.body.address,
+        contactno:req.body.contactno
+    };
    
-// //     var name=req.body.name;
-// //     var parentsname=req.body.parentsname;
-// //     var address=req.body.address;
-// //     var contactno=req.body.contactno;
+    // Student.create(req.body).then(function(Students){
+    //     console.log(Students);
+    // })
+    new Student(studentData).save(function(err, res){
+            console.log('success');
+       
+    });
+};
+
+const Displayrecords=(req,res)=>{
+    //  var rec=[];
+    //  console.log('helo');
+    // var stud=Student.find({},function(err,docs){
+    //        if(err) res.json(err);
+    //        for(var i=0;i<Object.keys(docs).length;i++){
+    //             var obj={
+    //                 id:docs[i].id,
+    //                 name:docs[i].Name,
+    //                 parentsname:docs[i].ParentsName,
+    //                 address:docs[i].Address,
+    //                 contactno:docs[i].ContactNo
+    //             }
+    //             console.log(obj);
+    //             rec.push(obj);
+    // }
    
-// //     var sql = "INSERT INTO records VALUES ?";
-// //     var values = [["",name,parentsname,address,contactno]];
-       
-// //     con.query(sql, [values], function (err, result) {
-// //         if (err) throw err;
-       
-   
-// //         console.log("1 record inserted");
-// //     });
-    
-
-
-// // };
-
-// // const Displayrecords=(req,res)=>{
-// //     var rec=[];
-// //         con.query('SELECT *FROM records', function (err, result) {
-// //             if (err) throw err;
-           
-// //             for(var i=0;i<Object.keys(result).length;i++){
-// //                 var obj={
-// //                     id:result[i].id,
-// //                     name:result[i].Name,
-// //                     parentsname:result[i].ParentsName,
-// //                     address:result[i].Address,
-// //                     contactno:result[i].ContactNo
-// //                 }
-               
-               
-           
-// //                 rec.push(obj);
-                
-// //             // console.log(todo[i].newadded);
-             
-// //         } 
-       
-// //         // console.log(rec);
-    
-// //             res.render('./pages/studentlist',{result:rec });
-           
+    Student.find({})
+    .then(console.log(Student))
+        .then(function(result) {
+            console.log('hello');
+            res.status(200).json(Student)
+        })
+        // .then(console.log('welcome'));
+//      const stud=Student.find()
+//     .exec()
+//         .then(docs => {
             
-// //           });
+//             res.status(200).json({
+//                 docs
+//             });
+           
+//         })
+//         // .catch(err => {
+//         //     console.log(err)
+//         // });
+//         stud.then(function(result) {
+//   console.log("Success!", result);
+// }).catch(function(error) {
+//   console.log("Failed!", error);
+// })
+        
+    //  const data=await stud;
+    //  console.log(data);   
+//         stud.then(function(result){
+// console.log(result)
+// });
+// console.log(stud);
+//         res.send(stud);
+        
+    // res.render('./pages/studentlist',{result:stud });
+ 
       
    
   
 
 
-// // };
-// // const DeleteRecord=(req,res)=>{
-// //     var delid=parseInt(req.params.id);
-// //     var sql="DELETE FROM records WHERE id="+delid;
-// //     con.query(sql,function(err,res){
-// //         if(err) throw err;
-// //     });
-// //     res.redirect("../../register/studentlist");
+};
+const DeleteRecord=(req,res)=>{
+    var delid=parseInt(req.params.id);
+    var sql="DELETE FROM records WHERE id="+delid;
+    con.query(sql,function(err,res){
+        if(err) throw err;
+    });
+    res.redirect("../../register/studentlist");
 
-// // }
-// // const EditRecord=(req,res)=>{
+}
+const EditRecord=(req,res)=>{
     
-// //     var editid=parseInt(req.params.id);
+    var editid=parseInt(req.params.id);
     
-// //     con.query('SELECT *FROM records Where id=?',req.params.id,function (err, result){
-// //         // for(var i=0;i<result.length;i++){
-// //         //     console.log(result[i].id);
-// //         //     }
-// //            console.log(result);
-// //         res.render('pages/edit',{result:result});
+    con.query('SELECT *FROM records Where id=?',req.params.id,function (err, result){
+        // for(var i=0;i<result.length;i++){
+        //     console.log(result[i].id);
+        //     }
+           console.log(result);
+        res.render('pages/edit',{result:result});
         
-// //  });
-// //  const UpdateRecord=(req,res)=>{
-// //     var name=req.body.name;
-// //     var parentsname=req.body.parentsname;
-// //     var address=req.body.address;
-// //     var contactno=req.body.contactno;
-// //     con.query('UPDATE records SET name=? WHERE id=?',param,function (err, result) {
-// //         if (err) throw err;
+ });
+ const UpdateRecord=(req,res)=>{
+    var name=req.body.name;
+    var parentsname=req.body.parentsname;
+    var address=req.body.address;
+    var contactno=req.body.contactno;
+    con.query('UPDATE records SET name=? WHERE id=?',param,function (err, result) {
+        if (err) throw err;
       
        
-// //     });
+    });
      
-// //  }
+ }
  
 
 
-// // }
+}
 
 
 
 
-// // module.exports={
-// //     AddStudents,
-// //     Displayrecords,
-// //     DeleteRecord,
-// //     EditRecord
-// // }
+module.exports={
+    AddStudents,
+    Displayrecords,
+    DeleteRecord,
+    EditRecord
+}
 
 
 
 
-// //mongodb 
+//mongodb 
 // const express = require('express');
 // var bodyParser = require('body-parser');
 // var app=express();
@@ -141,25 +168,11 @@
 
 // }
 
-// // module.exports={
-// //     con
-// //     // AddStudents,
-// //     // Displayrecords,
-// //     // DeleteRecord,
-// //     // EditRecord
-// // }
+// module.exports={
+//     con
+//     AddStudents,
+//     Displayrecords,
+//     DeleteRecord,
+//     EditRecord
+// }
 
-const mongoose = require('mongoose');
-var Schema= mongoose.Schema;
-
-
-var NoteSchema = new Schema({
-    name: String,
-    address: String
-});
-
-var Test= mongoose.model('Note', NoteSchema);
-
-module.exports={
-    Test
-}
